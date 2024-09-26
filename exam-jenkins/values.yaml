@@ -1,0 +1,46 @@
+appName: jenkins
+
+replicaCount: 1
+
+image:
+  repository: jenkins/jenkins
+  tag: lts
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  port: 8080
+  type: LoadBalancer
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
+
+persistence:
+  enabled: true
+  storageClass: "standard"
+  size: "8Gi"
+
+serviceAccount:
+  create: true
+  name: jenkins-sa
+  automount: true
+  annotations: {}
+
+ingress:
+  enabled: false
+  path: /
+  hosts:
+    - host: monapp.local
+      paths:
+        - /
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
